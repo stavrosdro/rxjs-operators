@@ -1,46 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { User, UserRequest, UserResponse } from '../interfaces/users';
-
-const users: User[] = [
-    {
-        id: 1,
-        firstName: 'Stavros',
-        lastName: 'Droutsas 1',
-        domain: 'Software Engineer',
-        active: true,
-    },
-    {
-        id: 2,
-        firstName: 'Stavros',
-        lastName: 'Droutsas 2',
-        domain: 'Software Engineer',
-        active: false,
-    },
-    {
-        id: 3,
-        firstName: 'Stavros',
-        lastName: 'Droutsas 3',
-        domain: 'Software Engineer',
-        active: false,
-    },
-    {
-        id: 4,
-        firstName: 'Stavros',
-        lastName: 'Droutsas 4',
-        domain: 'Software Engineer',
-        active: false,
-    },
-    {
-        id: 5,
-        firstName: 'Stavros',
-        lastName: 'Droutsas 5',
-        domain: 'Software Engineer',
-        active: true,
-    },
-];
 
 @Injectable({
     providedIn: 'root',
@@ -53,8 +16,16 @@ export class ApiService {
         const params = new HttpParams()
             .append('page', userRequest.page)
             .append('rowsPerPage', userRequest.rowsPerPage);
-        return this.http.get<UserResponse>(`${this.url}/users`, { params });
-        // return of({ data: users, page: 1, total: 5 });
+        return this.http.get<User[]>(`${this.url}/users`).pipe(
+            map((response: User[]) => ({
+                data: response.slice(
+                    (userRequest.page - 1) * userRequest.rowsPerPage,
+                    userRequest.page * userRequest.rowsPerPage
+                ),
+                page: userRequest.page,
+                total: response.length,
+            }))
+        );
     }
 
     importUsers(file: any) {

@@ -8,6 +8,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HomeComponent } from './containers/home/home.component';
 import { HeaderComponent } from './containers/header/header.component';
 import { TableComponent } from './components/table/table.component';
+import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
+import { DataService } from './services/data.service';
 
 @NgModule({
     declarations: [
@@ -23,6 +25,7 @@ import { TableComponent } from './components/table/table.component';
         FormsModule,
         ReactiveFormsModule,
         HttpClientModule,
+        HttpClientInMemoryWebApiModule.forRoot(DataService),
     ],
     providers: [],
     bootstrap: [AppComponent],
