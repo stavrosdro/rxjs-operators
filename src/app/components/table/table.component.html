@@ -1,0 +1,71 @@
+<table
+    class="table table-striped"
+    [ngStyle]="{ opacity: loading ? '0.5' : '1' }"
+>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Domain</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let row of data">
+            <th>{{ row.id }}</th>
+            <td>{{ row.firstName }}</td>
+            <td>{{ row.lastName }}</td>
+            <td>{{ row.domain }}</td>
+            <td>
+                <ng-container
+                    [ngTemplateOutlet]="row.active ? active : inactive"
+                ></ng-container>
+            </td>
+            <td>
+                <input
+                    type="checkbox"
+                    [checked]="row.active"
+                    (change)="onStatusChange(row.id, !row.active)"
+                />
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="d-flex justify-content-between py-2">
+    <div class="d-flex">
+        <ngb-pagination
+            [collectionSize]="total"
+            [(page)]="page"
+            [pageSize]="rowsPerPage"
+            (pageChange)="onPageChange()"
+        >
+        </ngb-pagination>
+        <div
+            class="spinner-border text-primary ml-2"
+            *ngIf="loading"
+            role="status"
+        >
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <select
+        class="custom-select"
+        style="width: auto"
+        [(ngModel)]="rowsPerPage"
+        (ngModelChange)="onPageChange()"
+    >
+        <ng-container *ngFor="let item of rowsPerPageOptions">
+            <option [ngValue]="item">{{ item }} items per page</option>
+        </ng-container>
+    </select>
+</div>
+
+<ng-template #active>
+    <span class="badge badge-success">ACTIVE</span>
+</ng-template>
+<ng-template #inactive>
+    <span class="badge badge-danger">INACTIVE</span>
+</ng-template>

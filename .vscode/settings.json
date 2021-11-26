@@ -1,0 +1,18 @@
+{
+    "material-icon-theme.activeIconPack": "angular_ngrx",
+    "eslint.alwaysShowStatus": true,
+    "prettier.endOfLine": "crlf",
+    "prettier.htmlWhitespaceSensitivity": "strict",
+    "prettier.jsxBracketSameLine": true,
+    "prettier.jsxSingleQuote": true,
+    "prettier.singleQuote": true,
+    "prettier.tabWidth": 4,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "html.format.endWithNewline": true,
+    "typescript.format.semicolons": "insert",
+    "files.exclude": {
+        "**/.git": false
+    },
+    "git.autofetch": true
+}
