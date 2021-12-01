@@ -50,7 +50,7 @@ export class DataService implements InMemoryDbService {
                     firstName: 'Stavros',
                     lastName: 'Droutsas 6',
                     domain: 'Software Engineer',
-                    active: true,
+                    active: false,
                 },
                 {
                     id: 7,
@@ -78,14 +78,14 @@ export class DataService implements InMemoryDbService {
                     firstName: 'Stavros',
                     lastName: 'Droutsas 10',
                     domain: 'Software Engineer',
-                    active: true,
+                    active: false,
                 },
                 {
                     id: 11,
                     firstName: 'Stavros',
                     lastName: 'Droutsas 11',
                     domain: 'Software Engineer',
-                    active: true,
+                    active: false,
                 },
                 {
                     id: 12,
@@ -113,14 +113,14 @@ export class DataService implements InMemoryDbService {
                     firstName: 'Stavros',
                     lastName: 'Droutsas 15',
                     domain: 'Software Engineer',
-                    active: true,
+                    active: false,
                 },
                 {
                     id: 16,
                     firstName: 'Stavros',
                     lastName: 'Droutsas 16',
                     domain: 'Software Engineer',
-                    active: true,
+                    active: false,
                 },
                 {
                     id: 17,
@@ -148,7 +148,7 @@ export class DataService implements InMemoryDbService {
                     firstName: 'Stavros',
                     lastName: 'Droutsas 20',
                     domain: 'Software Engineer',
-                    active: true,
+                    active: false,
                 },
             ],
         };

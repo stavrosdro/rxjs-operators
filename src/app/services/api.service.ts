@@ -1,6 +1,6 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { User, UserRequest, UserResponse } from '../interfaces/users';
@@ -13,9 +13,6 @@ export class ApiService {
     constructor(private http: HttpClient) {}
 
     fetchUsers(userRequest: UserRequest): Observable<UserResponse> {
-        const params = new HttpParams()
-            .append('page', userRequest.page)
-            .append('rowsPerPage', userRequest.rowsPerPage);
         return this.http.get<User[]>(`${this.url}/users`).pipe(
             map((response: User[]) => ({
                 data: response.slice(
@@ -28,31 +25,26 @@ export class ApiService {
         );
     }
 
-    importUsers(file: any) {
-        const formData = new FormData().append('file', file);
-        return this.http.post(`${this.url}/users`, formData, {
+    createUser(user: User) {
+        return this.http.post(`${this.url}/users`, user, {
             reportProgress: true,
             observe: 'events',
         });
+    }
+
+    editUser(user: User) {
+        return this.http.put(`${this.url}/users`, user);
     }
 
     exportUsers() {
         return this.http.get(`${this.url}/users`);
     }
 
-    // changeUserStatus(id: number, active: boolean) {
-    //     const body = {
-    //         id,
-    //         active,
-    //     };
-    //     return this.http.put(`${this.url}/users`, body);
+    // enableUser(id: number) {
+    //     return this.http.put(`${this.url}/users/${id}`, { active: true });
     // }
 
-    enableUser(id: number) {
-        return this.http.put(`${this.url}/users/${id}`, { active: true });
-    }
-
-    disableUser(id: number) {
-        return this.http.delete(`${this.url}/users/${id}`);
-    }
+    // disableUser(id: number) {
+    //     return this.http.delete(`${this.url}/users/${id}`);
+    // }
 }

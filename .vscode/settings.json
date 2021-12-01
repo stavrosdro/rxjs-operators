@@ -9,6 +9,9 @@
     "prettier.tabWidth": 4,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true
+    },
     "html.format.endWithNewline": true,
     "typescript.format.semicolons": "insert",
     "files.exclude": {

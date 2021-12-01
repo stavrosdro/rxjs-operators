@@ -30,7 +30,7 @@ export class TableComponent {
         this.pageChange.emit(paginator);
     }
 
-    onStatusChange(id: number, newStatus: boolean) {
-        this.statusChange.emit({ id, newStatus });
+    onStatusChange(user: User) {
+        this.statusChange.emit(user);
     }
 }

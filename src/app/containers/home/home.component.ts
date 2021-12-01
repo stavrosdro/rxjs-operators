@@ -1,8 +1,8 @@
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable, of, Subject } from 'rxjs';
+import { catchError, map, take, takeUntil, tap } from 'rxjs/operators';
+import { User, UserResponse } from 'src/app/interfaces/users';
 import { UsersService } from './../../services/users.service';
-import { Component, OnInit } from '@angular/core';
-import { UserResponse } from 'src/app/interfaces/users';
-import { Observable, of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
 
 export interface Paginator {
     page: number;
@@ -15,7 +15,9 @@ export interface Paginator {
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
+    unsubscribe = new Subject<boolean>();
+    private user$: Observable<any> = this.service.user$;
     private userResponse$: Observable<UserResponse> = this.service.users$;
     data$ = this.userResponse$.pipe(
         tap(
@@ -52,25 +54,64 @@ export class HomeComponent implements OnInit {
 
     ngOnInit(): void {
         this.onPageChange(this.paginator);
+        this.user$
+            .pipe(takeUntil(this.unsubscribe))
+            .subscribe(() => this.onPageChange(this.paginator));
     }
 
     onPageChange(event: { page: number; rowsPerPage: number }) {
         this.loading = true;
+        const newPaginator: Paginator = {
+            ...this.paginator,
+            page: event.page,
+            rowsPerPage: event.rowsPerPage,
+        };
+        this.paginator = newPaginator;
         this.service.onLoadUsers({
             page: event.page,
             rowsPerPage: event.rowsPerPage,
         });
     }
 
-    onStatusChange(event: { id: number; newStatus: boolean }) {
-        console.log(event);
+    onStatusChange(user: User) {
+        const updatedUser: User = {
+            ...user,
+            active: !user.active,
+        };
+        this.service.onEditUser(updatedUser);
     }
 
-    onImportCsv() {
-        console.log('import');
+    onImportJSON(event: Event) {
+        const files: FileList | null = (event.target as HTMLInputElement).files;
+        if (files == null) {
+            return;
+        }
+        if (files[0] == null) {
+            return;
+        }
+        const reader = new FileReader();
+        reader.readAsText(files[0], 'UTF-8');
+        reader.onload = (evt: any) => {
+            const users: any[] = JSON.parse(evt.target.result);
+            this.service
+                .onImportUsers(users)
+                .pipe(take(users.length))
+                .subscribe(
+                    (res) => console.log(res),
+                    (err) => console.log(err),
+                    () => this.onPageChange(this.paginator)
+                );
+        };
+        reader.onerror = () => {
+            console.log('error reading file');
+        };
     }
 
     onExportCsv() {
         console.log('export');
+    }
+
+    ngOnDestroy(): void {
+        this.unsubscribe.next(true);
     }
 }

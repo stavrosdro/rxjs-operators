@@ -1,11 +1,16 @@
 <div class="d-flex my-3" style="margin-left: -0.25rem; margin-right: -0.25rem">
-    <button type="button" class="btn btn-secondary m-1" (click)="onImportCsv()">
-        Import CSV
+    <button
+        type="button"
+        class="btn btn-secondary m-1"
+        (click)="fileUpload.click()"
+    >
+        Import JSON
     </button>
     <button type="button" class="btn btn-success m-1" (click)="onExportCsv()">
         Export CSV
     </button>
 </div>
+
 <app-table
     [data]="data$ | async"
     [page]="paginator.page"
@@ -16,3 +21,12 @@
     (pageChange)="onPageChange($event)"
     (statusChange)="onStatusChange($event)"
 ></app-table>
+
+<input
+    #fileUpload
+    type="file"
+    id="importCSV"
+    class="d-none"
+    accept=".json"
+    (change)="onImportJSON($event)"
+/>
