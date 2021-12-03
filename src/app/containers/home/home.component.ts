@@ -58,6 +58,15 @@ export class HomeComponent implements OnInit, OnDestroy {
                     helpers.mapObjectListToCsv
                 );
             });
+        this.service.allUsersWithoutId$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe((res) => {
+                helpers.downloadFile(
+                    helpers.removeKeyFromList(res, 'id'),
+                    'Users.json',
+                    JSON.stringify
+                );
+            });
     }
 
     onPageChange(event: { page: number; rowsPerPage: number }) {
@@ -106,8 +115,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     onExportCsv() {
-        console.log('Export button clicked!');
-        this.service.onExportUsers();
+        console.log('Export CSV button clicked!');
+        this.service.onExportUsers('csv');
+    }
+
+    onExportJson() {
+        console.log('Export JSON button clicked!');
+        this.service.onExportUsers('json');
     }
 
     ngOnDestroy(): void {

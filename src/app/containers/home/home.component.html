@@ -1,14 +1,32 @@
-<div class="d-flex my-3" style="margin-left: -0.25rem; margin-right: -0.25rem">
-    <button
-        type="button"
-        class="btn btn-secondary m-1"
-        (click)="fileUpload.click()"
-    >
-        Import JSON
-    </button>
-    <button type="button" class="btn btn-success m-1" (click)="onExportCsv()">
-        Export CSV
-    </button>
+<div
+    class="d-flex justify-content-between my-3"
+    style="margin-left: -0.25rem; margin-right: -0.25rem"
+>
+    <span>
+        <button
+            type="button"
+            class="btn btn-success m-1"
+            (click)="onExportJson()"
+        >
+            Export JSON
+        </button>
+        <button
+            type="button"
+            class="btn btn-secondary m-1"
+            (click)="fileUpload.click()"
+        >
+            Import JSON
+        </button>
+    </span>
+    <span>
+        <button
+            type="button"
+            class="btn btn-success m-1"
+            (click)="onExportCsv()"
+        >
+            Export CSV
+        </button>
+    </span>
 </div>
 
 <app-table

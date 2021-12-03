@@ -1,8 +1,16 @@
 import { Injectable } from '@angular/core';
 import { from, Observable, ReplaySubject, Subject } from 'rxjs';
-import { concatMap, exhaustMap, mergeMap, switchMap } from 'rxjs/operators';
+import {
+    concatMap,
+    exhaustMap,
+    filter,
+    mergeMap,
+    switchMap,
+} from 'rxjs/operators';
 import { User, UserRequest, UserResponse } from '../interfaces/users';
 import { ApiService } from './api.service';
+
+export type downloadFile = 'csv' | 'json';
 
 @Injectable({
     providedIn: 'root',
@@ -20,9 +28,14 @@ export class UsersService {
         mergeMap((req: User) => this.api.editUser(req))
     );
 
-    private exportUsers = new Subject<boolean>();
+    private exportUsers = new Subject<downloadFile>();
     private exportUsers$ = this.exportUsers.asObservable();
     allUsers$: Observable<any> = this.exportUsers$.pipe(
+        filter((file) => file === 'csv'),
+        exhaustMap(() => this.api.exportUsers())
+    );
+    allUsersWithoutId$ = this.exportUsers$.pipe(
+        filter((file) => file === 'json'),
         exhaustMap(() => this.api.exportUsers())
     );
 
@@ -40,7 +53,7 @@ export class UsersService {
         return from(users).pipe(concatMap((user) => this.api.createUser(user)));
     }
 
-    onExportUsers() {
-        this.exportUsers.next(true);
+    onExportUsers(type: downloadFile) {
+        this.exportUsers.next(type);
     }
 }

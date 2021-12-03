@@ -30,3 +30,10 @@ export function mapObjectListToCsv(
 
     return csvContent.join(options.eol);
 }
+
+export function removeKeyFromList(list: any[], key: string) {
+    return list.map((item) => {
+        delete item[key];
+        return item;
+    });
+}

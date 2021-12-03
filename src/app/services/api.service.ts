@@ -33,7 +33,7 @@ export class ApiService {
         return this.http.put(`${this.url}/users`, user);
     }
 
-    exportUsers() {
-        return this.http.get(`${this.url}/users`);
+    exportUsers(): Observable<User[]> {
+        return this.http.get<User[]>(`${this.url}/users`);
     }
 }
