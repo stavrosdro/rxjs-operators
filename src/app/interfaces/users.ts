@@ -16,3 +16,10 @@ export interface UserResponse {
     page: number;
     total: number;
 }
+
+export interface Paginator {
+    page: number;
+    rowsPerPage: number;
+    rowsPerPageOptions: number[];
+    total: number;
+}

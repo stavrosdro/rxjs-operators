@@ -1,16 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, of, Subject } from 'rxjs';
 import { catchError, map, take, takeUntil, tap } from 'rxjs/operators';
-import { User, UserResponse } from 'src/app/interfaces/users';
+import { Paginator, User, UserResponse } from 'src/app/interfaces/users';
 import * as helpers from '../../functions/helpers.functions';
 import { UsersService } from './../../services/users.service';
-
-export interface Paginator {
-    page: number;
-    rowsPerPage: number;
-    rowsPerPageOptions: number[];
-    total: number;
-}
 
 @Component({
     templateUrl: './home.component.html',
@@ -18,13 +11,11 @@ export interface Paginator {
 })
 export class HomeComponent implements OnInit, OnDestroy {
     private unsubscribe$ = new Subject<boolean>();
-    private user$: Observable<any> = this.service.user$;
     private userResponse$: Observable<UserResponse> = this.service.users$;
     data$ = this.userResponse$.pipe(
         tap(
             (response) => {
                 console.log('success reponse', response);
-
                 const newPaginator: Paginator = {
                     ...this.paginator,
                     page: response.page,
@@ -55,20 +46,17 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.onPageChange(this.paginator);
-        this.user$
+        this.service.user$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(() => this.onPageChange(this.paginator));
         this.service.allUsers$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe((res) => {
-                const blob = new Blob([helpers.mapObjectListToCsv(res)], {
-                    type: 'application/octet-stream',
-                });
-                const a = document.createElement('a');
-                a.href = URL.createObjectURL(blob);
-                a.download = 'Users.csv';
-                a.click();
-                a.remove();
+                helpers.downloadFile(
+                    res,
+                    'Users.csv',
+                    helpers.mapObjectListToCsv
+                );
             });
     }
 
@@ -80,10 +68,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             rowsPerPage: event.rowsPerPage,
         };
         this.paginator = newPaginator;
-        this.service.onLoadUsers({
-            page: event.page,
-            rowsPerPage: event.rowsPerPage,
-        });
+        this.service.onLoadUsers(this.paginator);
     }
 
     onStatusChange(user: User) {
