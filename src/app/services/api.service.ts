@@ -26,10 +26,7 @@ export class ApiService {
     }
 
     createUser(user: User) {
-        return this.http.post(`${this.url}/users`, user, {
-            reportProgress: true,
-            observe: 'events',
-        });
+        return this.http.post(`${this.url}/users`, user);
     }
 
     editUser(user: User) {
@@ -39,12 +36,4 @@ export class ApiService {
     exportUsers() {
         return this.http.get(`${this.url}/users`);
     }
-
-    // enableUser(id: number) {
-    //     return this.http.put(`${this.url}/users/${id}`, { active: true });
-    // }
-
-    // disableUser(id: number) {
-    //     return this.http.delete(`${this.url}/users/${id}`);
-    // }
 }

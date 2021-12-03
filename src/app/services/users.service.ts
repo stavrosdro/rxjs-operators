@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { from, Observable, ReplaySubject, Subject } from 'rxjs';
-import { concatMap, mergeMap, switchMap } from 'rxjs/operators';
+import { concatMap, exhaustMap, mergeMap, switchMap } from 'rxjs/operators';
 import { User, UserRequest, UserResponse } from '../interfaces/users';
 import { ApiService } from './api.service';
 
@@ -20,6 +20,12 @@ export class UsersService {
         mergeMap((req: User) => this.api.editUser(req))
     );
 
+    private exportUsers = new Subject<boolean>();
+    private exportUsers$ = this.exportUsers.asObservable();
+    allUsers$: Observable<any> = this.exportUsers$.pipe(
+        exhaustMap(() => this.api.exportUsers())
+    );
+
     constructor(private api: ApiService) {}
 
     onLoadUsers(userRequest: UserRequest) {
@@ -32,5 +38,9 @@ export class UsersService {
 
     onImportUsers(users: User[]) {
         return from(users).pipe(concatMap((user) => this.api.createUser(user)));
+    }
+
+    onExportUsers() {
+        this.exportUsers.next(true);
     }
 }
