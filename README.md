@@ -2,11 +2,11 @@
 
 This article's purpose is to provide the basic information to a beginner to use the most common RxJS operators and hopefully be the spark of embracing reactive programming in the future. The article's target is to provide not only real-world use cases for switchMap, mergeMap, exhaustMap, concatMap, but also a small project as a starting point.
 
-During my journey on these operators, I hated the examples that look simple and easy but not reveal the operator's true purpose and potential. I will try my best to provide use-cases that are understandable, reproduceable in your applications and getting the basics right.
+During my journey on these operators, I hated the examples that look simple and easy but not reveal the operator's true purpose and potential. I will try my best to provide use-cases that are understandable, reproduceable in your applications and help you get the basics right.
 
 ## Project Info & Structure
 
-Today's project is an Admin Tool that manages employees' access into a company's shared folder. Let's welcome an all-time-classic paginated table with a small checkbox on the right so we are able to turn the employee's status 'Active' or 'Inactive'. We are also able to export a file with the employees and import a file with new employees.
+Today's project is an Admin Tool that manages employees' access into a company's shared folder. Let's welcome an all-time-classic paginated table with a small checkbox on the right so we are able to set the employee's status 'Active' or 'Inactive'. We are also able to export a file with the existing employees and import a file with new employees.
 
 We have a smart component that hosts the table of the company's employees. Specific users' actions trigger events from the smart component and fire some HTTP calls towards an API (in-memory-web-api in our specific case). Of course, anyone can invoke an API when the user is selecting another page or clicks a button and populate the view with the response but now it's time to face some challenges.
 
@@ -43,11 +43,11 @@ onLoadUsers(userRequest) {
 }
 ```
 
-This makes absolutely sense. When users change page rapidly, they really don't care for the results of the previous pages but only for the final page where they will land. That's a perfect analogy with the `switchMap` operator that unsubscribes from the previous inner observable and subscribes to the new one.
+This makes absolute sense. When users change pages rapidly, they really don't care for the results of the previous pages but only for the final page where they will land. That's a perfect analogy with the `switchMap` operator that unsubscribes from the previous inner observable and subscribes to the latest.
 
 ## Challenge #2: User clicks checkboxes **_rapidly_**
 
-In this scenario user wants to click several checkboxes very fast. Once again, we are able to use a loader in the center of the screen, wait until the checkbox's HTTP request is completed, then fire another request to refresh the page's employees and only after the updated data arrive, hide the loader and allow user to continue. Let's focus on the user. User wants to click a couple of checkboxes to change employees' statuses and wait for the updated data without any interruption. So, we are in a situation that several events will be emitted, we will manage them in **parallel** and update the data after.
+In this scenario user wants to click several checkboxes very fast. Once again, we are able to use a loader in the center of the screen, wait until the checkbox's HTTP request is completed, then fire another request to refresh the page's employees and only after the updated data have arrived, hide the loader and allow user to continue. Let's focus on the user. User wants to click a couple of checkboxes to change employees' statuses and wait for the updated data without any interruption. So, we are in a situation that several events will be emitted, we will manage them in **parallel** and update the data after.
 
 The component emits an event when user clicks the checkbox and holds a subscription into the `user$` observable. When an employee is updated successfully a new request is fired to update the data.
 
